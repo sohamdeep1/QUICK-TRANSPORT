@@ -1,0 +1,25 @@
+-- CreateEnum
+CREATE TYPE "RideStatus" AS ENUM ('REQUESTED', 'ACCEPTED', 'ARRIVED', 'STARTED', 'COMPLETED', 'CANCELLED');
+
+-- CreateTable
+CREATE TABLE "Ride" (
+    "id" TEXT NOT NULL,
+    "riderId" TEXT NOT NULL,
+    "captainId" TEXT,
+    "pickupLat" DOUBLE PRECISION NOT NULL,
+    "pickupLng" DOUBLE PRECISION NOT NULL,
+    "dropLat" DOUBLE PRECISION NOT NULL,
+    "dropLng" DOUBLE PRECISION NOT NULL,
+    "status" "RideStatus" NOT NULL DEFAULT 'REQUESTED',
+    "fare" DOUBLE PRECISION,
+    "distanceKm" DOUBLE PRECISION,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Ride_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Ride" ADD CONSTRAINT "Ride_riderId_fkey" FOREIGN KEY ("riderId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Ride" ADD CONSTRAINT "Ride_captainId_fkey" FOREIGN KEY ("captainId") REFERENCES "Captain"("id") ON DELETE SET NULL ON UPDATE CASCADE;

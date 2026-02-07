@@ -20,6 +20,7 @@ model User {
   password  String
   role      Role     @default(RIDER)
   createdAt DateTime @default(now())
+  rides     Ride[]
 
   captain Captain?
 }
@@ -31,8 +32,29 @@ model Captain {
   kycStatus KycStatus @default(PENDING)
   isOnline  Boolean   @default(false)
   wallet    Float     @default(0)
+  rides     Ride[]
 
   user User @relation(fields: [userId], references: [id])
+}
+
+model Ride {
+  id        String  @id @default(uuid())
+  riderId   String
+  captainId String?
+
+  pickupLat Float
+  pickupLng Float
+  dropLat   Float
+  dropLng   Float
+
+  status     RideStatus @default(REQUESTED)
+  fare       Float?
+  distanceKm Float?
+
+  createdAt DateTime @default(now())
+
+  rider   User     @relation(fields: [riderId], references: [id])
+  captain Captain? @relation(fields: [captainId], references: [id])
 }
 
 enum Role {
@@ -45,4 +67,13 @@ enum KycStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+enum RideStatus {
+  REQUESTED
+  ACCEPTED
+  ARRIVED
+  STARTED
+  COMPLETED
+  CANCELLED
 }
